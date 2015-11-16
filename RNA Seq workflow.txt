@@ -1,0 +1,301 @@
+BLASTn of Trinity Contigs
+
+	download Lotus cds library 'Lj3.0_cds.ffn.gz' from ftp://ftp.kazusa.or.jp/pub/lotus/lotus_r3.0/
+		     Soy cds library
+
+1. Constucting BLASTn database
+	makeblastdb -in ~/path/Gmax_189_cds.fa  -out GlycineDB -dbtype nucl -parse_seqids
+
+2. BLASTn Trinity contigs against database
+	blastn -query Trinity.fasta.adj    -out BLASTN_LJ2.5-Trinity.txt  -db Lotus2.5DB -outfmt 6 -evalue 1e-4
+	
+	*'Glycine DB is the name representing the entire Glycine Database (all files assoc. with it)
+
+3. Extract best hit based on bit score
+	sort -k1,1 -k12,12nr -k11,11n ~/Downloads/Lotus_BLAST_DB_2.5/BLASTN_LJ2.5-Trinity.txt | sort -u -k1,1 --merge > BLASTN_LJ2.5-Trinity_BESTHIT.txt
+
+(BLASTing Gylcine against Lotus japonicus)
+blastn -query ~/Downloads/rsem/Ljgenome_2.5.fasta -out BLASTN_LJ-Soy_out.txt  -db GlycineDB -outfmt 6 -evalue 1e-4
+
+De novo Trinity assembly (v2.0.6)
+
+	./Trinity --seqType fq --SS_lib_type FR --max_memory 20G  --left LFY_R1.fastq.gz,LFR_R1.fastq.gz --right LFY_R2.fastq.gz,LFR_R2.fastq.gz --CPU 6
+
+
+	output: Trinity.fasta
+
+
+Concatanating Trinity Headers
+	cat ~/path/Trinity.fasta | cut -f 1 -d “ “ > Trinity.fasta.adj
+
+
+
+Abundance Estimation (FPKM) using RSEM built into Trinity
+
+	point terminal to RSEM folder within your Trinity directory and execute 'make' to setup RSEM
+	do the same for bowtie
+	
+	cd ~/path/Trinity/util  
+	#contains RSEM scripts and tools such as align_and_estimate_abundance.pl
+
+1. Quantify expression (FPKM)
+	./align_and_estimate_abundance.pl --seqType fq --left ~/path/LFR_R1.fastq --right 	~/path/LFR_R2.fastq --transcripts ~/path/trinity_out_dir/Trinity.fasta.adj --output_prefix LFR 	--est_method RSEM --aln_method bowtie --trinity_mode --prep_reference
+
+	output: LFR.genes.results and LFR.isoforms.results
+
+2. Generate file (cumul_counts.txt) indicating counts over some threshold of FPKM
+
+	~/Downloads/Trinity2/util/misc/count_features_given_MIN_FPKM_threshold.pl RSEM.genes.results > cumul_counts.txt
+
+	output: 124875 contigs with >0 FPKM
+
+
+• Build expression value matrix (preparing for diff. exp)
+	../abundance_estimates_to_matrix.pl --est_method RSEM --out_prefix Trinity_trans 	LFY.genes.results LFR.genes.results
+
+output: Trinity_trans.counts.matrix (counts) and Trinity_trans.TMM.fpkm.matrix (fpkm normalized)
+
+
+
+• Create file containing transcript length information
+	 cat ~/Downloads/Trinity2/util/RSEM_RED_Aug28.isoforms.results | cut -f1,3,4 > 	trans_lengths.txt
+
+
+
+
+
+
+
+• Differential Expression Analysis by EdgeR
+
+	cd ~/path/Trinity/Analysis/DifferentialExpression/
+
+	../run_DE_analysis.pl --matrix ~/Downloads/Trinity2/util/Trinity_trans.counts.matrix --method 	edgeR
+
+	output: Trinity_trans.counts.matrix.LFR_vs_LFY.edgeR.DE_results
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+STAR-RSEM Analysis
+
+Download pseudomol and gff
+
+ftp://ftp.kazusa.or.jp/pub/lotus/lotus_r2.5/
+
+Convert gff3 to gtf
+
+usegalaxy.org  gffread Filters and/or converts GFF3/GTF2 records (Galaxy Tool Version 2.2.1.0)
+
+or use gffread within Cufflinks:
+
+prep reference
+
+ ./rsem-prepare-reference --gtf Lj3.0_gene_models_geneids.gtf ~/Downloads/rsem/Lj3.0_pseudomol.fna Lotus --star --star-path ~/Downloads/STAR/bin/Linux_x86_64/
+
+calculate expression
+
+./rsem-calculate-expression --star --star-path ~/Downloads/STAR/bin/Linux_x86_64/ --gzipped-read-file -p 8 ~/Downloads/Trinity2/LFR_R1.fastq.gz,~/Downloads/Trinity2/LFR_R2.fastq.gz ~/Downloads/rsem/Lotus REDexpression
+
+**penultimate parameter is the ref database location
+ **last parameter is the expression file prefix
+
+*use Trinity tools to build matrix and call EdgeR to calculate differential expression
+
+AgriGO
+
+differentially expressed genes were converted from v2.5 to v1.0 because AgriGO does not recognize the IDs.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Miscellany
+
+Prepare STAR reference genome
+
+LOCAL
+cd ~/Downloads/STAR/bin/Linux_x86_64
+
+./STAR --genomeDir ~/Downloads/rsem/ --runMode genomeGenerate --genomeFastaFiles ~/Downloads/rsem/Lj3.0_pseudomol.fna --sjdbGTFfile ~/Downloads/rsem/Lj3.0_gene_models_geneids.gtf --sjdbOverhang 100 --runThreadN 8
+
+CLUSTER
+from crunch09: cd /Linux/bin
+STAR --genomeDir /SciBorg/array0/boehmm/STARstuff/  --runMode genomeGenerate --genomeFastaFiles /SciBorg/array0/boehmm/STARstuff/Ljgenome_2.5.fasta --sjdbGTFfile  /SciBorg/array0/boehmm/STARstuff/Ljannotation.gtf --sjdbOverhang 100 --runThreadN 8  --outFileNamePrefix SciBorg/array0/boehmm/STARstuff/
+
+align reads
+
+Yellow stage
+
+./STAR --genomeDir ~/Downloads/rsem/ --readFilesIn ~/Downloads/Trinity2/LFY_R1.fastq ~/Downloads/Trinity2/LFY_R2.fastq --runThreadN 8
+
+/Linux/bin/STAR --genomeDir /SciBorg/array0/boehmm/STARstuff/ --readFilesIn /SciBorg/array0/boehmm/LFY_R1.fastq /SciBorg/array0/boehmm/LFY_R2.fastq --runThreadN 8
+
+***rename the alignment file from 'Aligned.out.sam' to 'AlignedYELLOW.out.sam' to avoid writing over with the red stage data
+
+
+RSEM to quantify expression (standalone not the Trinity version)
+
+cd ~/Downloads/rsem
+
+extract exons from gtf file (not sure if neccesary, did not include in pipeline)
+
+awk 'BEGIN {FS="\t"} {if($3 == "exon") print $0}' Lj3.0_gene_models.gtf > Lj3.0_gene_models_exons.gtf
+
+delete any rows (entries) that do not have a gene ID
+
+awk '/gene_id/' Lj3.0_gene_models.gtf > Lj3.0_gene_models_geneids.gtf
+
+
+
+
+
+
+
+
+
+
+align reads (STAR) & calculate expression
+
+ ./rsem-calculate-expression --star --star-path ~/Downloads/STAR/Linux_x86_64 --gzipped-read-file -p 8 ~/Downloads/Trinity2/LFY_R1.fastq.gz,~/Downloads/Trinity2/LFY_R2.fastq.gz ~/Downloads/rsem/Lotus YELLOWexpression
+
+
+
+**separate fastq files by commas not by spaces
+**YELLOWexpression is the output name
+**~/Downloads/rsem is the folder that contains the reference from the 'prep reference' step
+**in reference genome path need to specify the name of the reference 'Lotus' ie: ~/Downloads/rsem/Lotus
+
+
+
+
+GSNAP / GMAP
+
+Build genome database from L.japonicus .fasta file
+
+~/Downloads/gmap$ gmap_build -D ~/Downloads/gmap/ -d Lotus ~/Downloads/rsem/Lj3.0_pseudomol.fna
+
+Lotus=name of database
+Lj3.0_pseudomol.fna=reference genome downloaded from Kazusa (genome assembly build 3.0)
+
+
+
+Map reads using reference genome database 'Lotus'
+
+small -d refers to the database named 'Lotus' and -D points gsnap to the 'Lotus' directory
+ 
+ gsnap -d Lotus -D ~/Downloads/gmap/Lotus --pairmax-rna=10000 --localsplicedist=10000 --clip-overlap -N 1 --nthreads=6 --quality-protocol=sanger --ordered --format=sam --nofails ~/Downloads/Trinity2/LFR_R1.fastq ~/Downloads/Trinity2/LFR_R2.fastq > mappedRED.sam
+
+(Do the same for the yellow stage reads LFY_R1.fastq and LFYR2.fastq):
+
+gsnap -d Lotus -D ~/Downloads/gmap/Lotus --pairmax-rna=10000 --localsplicedist=10000 --clip-overlap -N 1 --nthreads=6 --quality-protocol=sanger --ordered --format=sam --nofails ~/Downloads/Trinity2/LFY_R1.fastq ~/Downloads/Trinity2/LFY_R2.fastq > mappedYELLOW.sam
+
+
+CLUSTER
+
+ssh boehmm@zoology.ubc.ca	'ssh' = secure shell protocol is an encrypted network protocol to allow remote login and other network services to operate securely over an unsecured network
+
+ssh cluster
+ssh crunch09 (or whatever is free)
+
+ls (lists your files, fastqs and the like)
+
+cd /Linux/bbmap (find your program, ie bbmap)
+./bbmap.sh
+
+
+PUSH
+
+'scp' Secure copy or SCP is a means of securely transferring computer files between a local host and a remote host or between two remote hosts
+
+exit cluster by CTRL+d
+
+cd ~/path/
+scp Ljannotation.gtf boehmm@zoology.ubc.ca:cluster
+
+PULL
+
+scp boehmm@zoology.ubc.ca:cluster/STARstuff/AlignedYELLOW.out.sam ~/Downloads
+
+Present Working Directory pwd
+REMOVE files (once logged onto cluster) by rm <file>
+make new directory (ssh to cluster level, not crunch level) mkdir <nameofdirecotry>
+remove directory (ssh to cluster level, not crunch level) rmdir <nameofdirectory>
+move file to STARstuff directory:
+mv /Newdisk/SciBorg/array0/boehmm/Ljannotation.gtf STARstuff
+
+if on a crunch node, your pwd is /SciBorg/array0/boehmm/
