@@ -3,82 +3,76 @@
 setwd('C:/Users/mannfred/Dropbox/UBC Botany/Lotus/Excel Books/OutputTrinity')
 
 Lotus<-read.csv('Trinity_trans_2.counts.matrix.LFR2_vs_LFY2.edgeR.csv', header=TRUE) 
-
 head(Lotus)
-NROW(Lotus)
-
-pvalues<-which(Lotus$PValue < 0.05)
-NROW(pvalues) # 29207
-
-FDR<-which(Lotus$FDR < 0.05)
-NROW(FDR) # 21014 
 
 
 
-#### Create subset of just significantly expressed genes####
+#### Create subset of genes differentially expressed at yellow stage####
 
 LotusSUBSET<-subset(Lotus, FDR<0.0500) #subset of Lotus with only significant rows
-NROW(LotusSUBSET)
+head(LotusSUBSET)
 
 
-samp2SIG<-subset(LotusSUBSET, logFC>0) #subsetting my FDR subset to include only fold changes greater than 0 (less than 0 indicates LFR is higher expressed)
-NROW(samp2SIG) 
+samp1SIG<-subset(LotusSUBSET, logFC>0) #subsetting my FDR subset to include only fold changes greater than 0 
+                                       #(less than 0 indicates red stage is higher expressed)
 head(samp1SIG) #samp1SIG is a subset of Lotus with logFC greater than 0 and all FDR<0.05
 
-write.csv(samp2SIG, file='edgeR_results_LFYHIGHER_Sep30_2015.csv') 
+write.csv(samp1SIG, file='edgeR_results_LFYHIGHER_Sep30_2015.csv') 
 
 
 
-####now need to annotate samp1SIG subset with Lotus 2.5 BLAST results#### 
+####annotate samp1SIG with Lotus 2.5 BLAST results#### 
 setwd('C:/Users/mannfred/Dropbox/UBC Botany/Lotus/Excel Books/OutputTrinity') 
-LotusYELLOW<-read.csv('edgeR_results_LFYHIGHER_Sep30_2015.csv', header=TRUE) # OR just LotusRED<-samp1SIG
-head(LotusYELLOW)
 
+#import differentially expressed genes at yellow stage of floral colour change
+LotusYELLOW<-read.csv('edgeR_results_LFYHIGHER_Sep30_2015.csv', header=TRUE) 
+head(LotusYELLOW) 
+
+#import Trinity contig-BLAST lookup table
 setwd('C:/Users/mannfred/Dropbox/UBC Botany/Lotus/Excel Books/OutputTrinity/BLAST Data')
-ResultsBLAST<-read.csv('BLASTN_LJ2.5-Trinity_BESTHIT.csv', header=TRUE) #bestHIT extracted in Linux shell
-#remove isoform information from Trinity IDs (isoforms will be considered downstream)
+ResultsBLAST<-read.csv('BLASTN_LJ2.5-Trinity_BESTHIT.csv', header=TRUE) 
+#besthits extracted in Linux shell (see Trinity RNA-seq instructions)
+
+
+#remove isoform information from Trinity IDs (using genes.results file from edgeR)
 ResultsBLAST$Trinity_ID = sapply(strsplit(paste(ResultsBLAST$Trinity_ID), "_i"), function(x)x[[1]])
 head(ResultsBLAST)
 
-#use match function to annotate differentially expressed Trinity contigs
+#annotate differentially expressed Trinity contigs
 LotusYELLOW$Lotus_ID<-ResultsBLAST$Lotus_ID[match(LotusYELLOW$Trinity_ID, ResultsBLAST$Trinity_ID)]
 head(LotusYELLOW)
 
 write.csv(LotusYELLOW, file='edgeR_results_LFYHIGHER_Annotated_Nov7_2015.csv')
-#now ready to export to AgriGO 
+#now ready to export to AgriGO for ontology term enrichment analysis 
 
 
 
-
-
-
-####matching AgriGO genes to Trinity contigs####
-
-
+####Post-AgriGO: Match genes of interest (from AgriGO) to their respective Trinity contigs####
 
 #import annotated diffexp Trinity contigs
 setwd('C:/Users/mannfred/Dropbox/UBC Botany/Lotus/Excel Books/OutputTrinity/')
-ResultsBLAST_red<-read.csv('edgeR_results_LFRHIGHER_Annotated_Nov6_2015.csv', header=TRUE)
-head(ResultsBLAST_red)
+Annotated_yellow<-read.csv('edgeR_results_LFYHIGHER_Annotated_Nov7_2015.csv', header=TRUE)
+head(ResultsBLAST_yellow)
 
-#import genes associated with some enriched GO term (ie Flavonoid bionsythetic process)
+#import a gene list associated with some enriched GO term (example: Flavonoid bionsythetic process)
 setwd('C:/Users/mannfred/Dropbox/UBC Botany/Lotus/Excel Books/OutputTrinity/AgriGO Genes Trinity')
+
 Flav<-read.csv('Flavonoid.csv', header=TRUE)
 head(Flav)
-#match AgriGO genes with every BLAST hit by 'Lotus_ID'
+
+#match Flavonoid genes to their Trinity contig by 'Lotus_ID' column
 library(dplyr)
-FlavANNOTATED<-inner_join(Flav, ResultsBLAST_red, by='Lotus_ID') 
+FlavANNOTATED<-inner_join(Flav, Annotated_yellow, by='Lotus_ID') 
 #(this is different than just simply matching because there may be several
-#  Trinity contigs that match to one Lotus gene)
+#Trinity contigs that match to one Lotus gene)
 
 #remove uneccesary colums
 head(FlavANNOTATED)
 FlavANNOTATED$X<-NULL 
 FlavANNOTATED$PValue<-NULL 
 FlavANNOTATED$logCPM<-NULL
-head(FlavANNOTATED)
-NROW(FlavANNOTATED)
-#Trinity IDs have been matched to AgriGO results
+
+
 write.csv(FlavANNOTATED, file='Flavonoid Annotated.csv')
 
 
@@ -87,7 +81,7 @@ write.csv(FlavANNOTATED, file='Flavonoid Annotated.csv')
 
 setwd('C:/Users/mannfred/Dropbox/UBC Botany/Lotus/Excel Books/OutputTrinity/BLAST Data')
 
-#import Soybean-Trinity BLAST results .
+#import Soybean-Trinity contig BLAST lookup table
 SoybeanBLAST<-read.csv('BLASTN_Soy-Trinity_BESTHIT.csv', header=TRUE)
 head(SoybeanBLAST)
 
@@ -98,12 +92,12 @@ head(SoybeanBLAST)
 #import Enriched GO Term gene list 
 setwd('C:/Users/mannfred/Dropbox/UBC Botany/Lotus/Excel Books/OutputTrinity/AgriGO Genes Trinity')
 FlavonoidANNOTATED<-read.csv('Flavonoid Annotated.csv', header=TRUE) 
-NROW(FlavonoidANNOTATED)
+
 
 #insert Soybean IDs into Gene Term Enrichment data set
 FlavANNOTATED$Soybean_ID<-SoybeanBLAST$Soybean_ID[match(FlavANNOTATED$Trinity_ID, SoybeanBLAST$Trinity_ID)]
 head(FlavANNOTATED)
-#export into manuscript
+
 write.csv(FlavANNOTATED, file='Flavonoid Annotated.csv')
 
 
@@ -135,67 +129,3 @@ head(FlavANNOTATED)
 write.csv(FlavANNOTATED, file='Flavonoid Annotated.csv')
 
 
-
-
-
-
-
-
-
-
-
-###misc stuff
-
-
-####TOPHAT: extracting AgriGO genes from LJgenome####
-
-setwd('C:/Users/mannfred/Dropbox/UBC Botany/Lotus/')
-
-library(seqinr)
-
-LJfasta<- read.fasta(file = "Ljgenome_2.5.fasta", seqtype = "DNA", as.string = TRUE, set.attributes = FALSE)
-subsetlist<-read.csv("C:/Users/mannfred/Dropbox/UBC Botany/Lotus/TophatRED.csv", header=TRUE)
-
-head(subsetlist)
-head(LJfasta)
-
-length(Trinityfasta)
-names(Trinityfasta) %in% subsetlist$Trinity_ID
-
-SubsetLJFASTA<-LJfasta[names(LJfasta)%in%subsetlist$Lotus_ID]
-
-
-
-
-
-
-
-
-###Remove Rows with NA###
-
-
-head(GlycineRED)
-write.csv(GlycineRED, file='edgeR_results_FDR005_annotatedGLYCINE__BESTHIT_Sep3_2015_Annotated.csv')
-#now input list into AgriGO
-
-
-
-#### Other useful commands####
-
-#remove isoform information from Trinity IDs
-ResultsBLAST$Trinity_ID = sapply(strsplit(paste(ResultsBLAST$Trinity_ID), "_i"), function(x)x[[1]])
-
-
-###swtich from LJ1.0 to LJ2.5####
-setwd('C:/Users/mannfred/Dropbox/UBC Botany/Lotus/Excel Books/OutputTrinity/AgriGO Genes Trinity')
-Flav1<-read.csv('Flavonoid1_0.csv', header=TRUE)
-
-setwd('C:/Users/mannfred/Dropbox/UBC Botany/Lotus/Excel Books/OutputTrinity/BLAST Data')
-LJLJ<-read.csv('BLASTN_LJ-LJ_BESTHIT.csv')
-head(LJLJ)
-
-Flav1$Lotus2<-LJLJ$Lotus2.5_ID[match(Flav1$Lotus1, LJLJ$Lotus1.0_ID)]
-head(Flav1)
-
-setwd('C:/Users/mannfred/Dropbox/UBC Botany/Lotus/Excel Books/OutputTrinity/AgriGO Genes Trinity')
-write.csv(Flav1, file='Flavonoid2_0.csv')
