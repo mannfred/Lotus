@@ -1,4 +1,4 @@
-﻿### De novo assembly of RNA-seq reads using Trinity (v 2.0.6)
+﻿### De novo assembly of RNA-seq reads into contigs using Trinity (v 2.0.6)
 
 [Check out Trinity on GitHub](https://github.com/trinityrnaseq/trinityrnaseq/wiki) 
 <br />
