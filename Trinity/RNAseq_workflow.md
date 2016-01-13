@@ -1,10 +1,7 @@
-﻿### De novo assembly of RNA-seq reads into contigs using Trinity (v 2.0.6)
+### De novo assembly of RNA-seq reads into contigs using Trinity (v 2.0.6)
 
-<<<<<<< HEAD
+
 [Check out Trinity on GitHub](https://github.com/trinityrnaseq/trinityrnaseq/wiki)
-=======
-[Check out Trinity on GitHub](https://github.com/trinityrnaseq/trinityrnaseq/wiki) 
->>>>>>> origin/master
 <br />
 <br />
 
@@ -57,3 +54,33 @@ cd ~/path/Trinity/Analysis/DifferentialExpression/
 ./run_DE_analysis.pl --matrix ~/Downloads/Trinity2/util/Trinity_trans.counts.matrix --method edgeR
 ```
 output: Trinity_trans.counts.matrix.LFR_vs_LFY.edgeR.DE_results
+<br />
+<br />
+
+##### Construct BLAST database 
+
+Trinity contigs assembled *de novo* have unique Trinity IDs, but need to be annotated to be interpreted biologically.
+Build a BLASTn database using the CDS library of your desired organism to identify your contigs, I used the *Lotus japonicus* CDS library published by the Kazusa DNA Research Institute at ftp://ftp.kazusa.or.jp/pub/lotus/lotus_r3.0/ 
+```
+makeblastdb -in ~/path/Gmax_189_cds.fa  -out LotusDB -dbtype nucl -parse_seqids
+```
+output: LotusDB (database file usable by BLAST)
+<br />
+<br />
+##### BLASTn of Trinity contigs against database
+```
+blastn -query Trinity.fasta.adj    -out BLASTN_LJ-Trinity.txt  -db LotusDB -outfmt 6 -evalue 1e-4
+```
+output: BLASTN_LJ-Trinity.txt containing *all* BLAST matches to Trinity contigs
+<br />
+<br />
+##### Extract 'best' BLASTn result 
+I extracted the 'best' BLAST-Trinity matches based on bitscore, though one could extract the best hit based on percent match, or some other criteria. 
+```
+sort -k1,1 -k12,12nr -k11,11n ~/path/Lotus_BLAST_Database/BLASTN_LJ-Trinity.txt | sort -u -k1,1 --merge > BLASTN_LJ-Trinity_BESTHIT.txt
+```
+output: BLASTN_LJ-Trinity.txt containing the top BLAST-contig matches. This file can be used to annotate contigs identified in the differential expression test, and is necessary for gene ontology enrichment analysis. If you used a lenient expectation value when BLASTing (like I did) then I recommend double checking any contigs of interest by aligning the amino acid sequence of your contig with the amino acid sequences of its putative homologs. 
+
+
+
+
