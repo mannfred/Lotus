@@ -62,7 +62,7 @@ output: Trinity_trans.counts.matrix.LFR_vs_LFY.edgeR.DE_results
 Trinity contigs assembled *de novo* have unique Trinity IDs, but need to be annotated to be interpreted biologically.
 Build a BLASTn database using the CDS library of your desired organism to identify your contigs, I used the *Lotus japonicus* CDS library published by the Kazusa DNA Research Institute at ftp://ftp.kazusa.or.jp/pub/lotus/lotus_r3.0/ 
 ```
-makeblastdb -in ~/path/Gmax_189_cds.fa  -out LotusDB -dbtype nucl -parse_seqids
+makeblastdb -in ~/path/Lj3.0_cds.ffn.gz  -out LotusDB -dbtype nucl -parse_seqids
 ```
 output: LotusDB (database file usable by BLAST)
 <br />
