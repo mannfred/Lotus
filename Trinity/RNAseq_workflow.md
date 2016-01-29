@@ -16,8 +16,7 @@ yellow (LFY_R1.fastq and LFY_R2.fastq) and red (LFR_R1.fastq and LFR_R2.fastq) <
 
 Commands were run in the Ubuntu 14.04 shell
 ```
-./Trinity --seqType fq --SS_lib_type FR --max_memory 20G  --left LFY_R1.fastq.gz,LFR_R1.fastq.gz 
-	  --right LFY_R2.fastq.gz,LFR_R2.fastq.gz --CPU 6
+./Trinity --seqType fq --SS_lib_type FR --max_memory 20G  --left LFY_R1.fastq.gz,LFR_R1.fastq.gz --right LFY_R2.fastq.gz,LFR_R2.fastq.gz --CPU 6
 ```
 output: Trinity.fasta
 <br />
