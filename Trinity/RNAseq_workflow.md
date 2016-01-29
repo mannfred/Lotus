@@ -22,6 +22,12 @@ Commands were run in the Ubuntu 14.04 shell
 output: Trinity.fasta
 <br />
 <br />
+Relevant for UBC ZCU Users:
+```
+./Trinity --seqType fq --SS_lib_type FR --max_memory 20G --left ~/LSY_R1.fastq.gz ~/LSR_R1.fastq.gz --right ~/LSY_R2.fastq.gz ~/LSR_R2.fastq.gz --CPU 6 --output ~/Trinitystuff --no_bowtie
+```
+<br />
+<br />
 
 ##### Concatanate Trinity contig headers
 ```
