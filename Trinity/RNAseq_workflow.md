@@ -1,5 +1,5 @@
 First things first:
-Ensure number of reads is the same for all of your .fastq files
+Ensure your .fastq files are of equal length.
 ```
 ~/Lotus filicaulis Project/RNA seq reads$ gunzip -c LFY_R2.fastq.gz | wc -l
 ```
