@@ -1,9 +1,10 @@
+First things first:
 Ensure number of reads is the same for all of your .fastq files
 ```
 ~/Lotus filicaulis Project/RNA seq reads$ gunzip -c LFY_R2.fastq.gz | wc -l
 ```
 <br />
-If .fastq files are unequal in length (often happens when downloading published RNA-seq datasets), please see [Eric Normandeau's python script](https://github.com/enormandeau/Scripts/blob/master/fastqCombinePairedEnd.py) to re-sync trimmed .fastq files.
+If .fastq files are unequal in length (often happens when downloading published RNA-seq datasets), please see [Eric Normandeau's python script](https://github.com/enormandeau/Scripts/blob/master/fastqCombinePairedEnd.py) to re-sync trimmed .fastq files. Takes ~2.5 hours on a 7.3GB data set, your mileage may vary depending on your machine!
 <br />
 ---
 ### De novo assembly of RNA-seq reads into contigs using Trinity (v 2.0.6)
