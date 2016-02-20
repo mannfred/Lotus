@@ -1,3 +1,8 @@
+Ensure number of reads is the same for all of your .fastq files
+```
+~/Lotus filicaulis Project/RNA seq reads$ gunzip -c LFY_R2.fastq.gz | wc -l
+```
+
 ### De novo assembly of RNA-seq reads into contigs using Trinity (v 2.0.6)
 
 
