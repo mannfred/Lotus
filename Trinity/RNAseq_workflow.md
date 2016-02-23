@@ -32,7 +32,8 @@ output: Trinity.fasta
 <br />
 Relevant for UBC ZCU Cluster Users:
 ```
-./Trinity --seqType fq --max_memory 50G --left ~/all_LS_R1.fastq --right ~/all_LS_R2.fastq --CPU 6 --no_bowtie --output ~/trinity-stuff
+/Linux/trinity/./Trinity --seqType fq --max_memory 48G --left /SciBorg/array0/boehmm/Leaf_R1_pairs.fastq.gz,/SciBorg/array0/boehmm/Trap_R1_pairs.fastq.gz --right /SciBorg/array0/boehmm/Leaf_R2_pairs.fastq.gz,/SciBorg/array0/boehmm/Trap_R2_pairs.fastq.gz --CPU 16 --no_bowtie --output ~/Genlisea-trinity
+
 ```
 <br />
 <br />
