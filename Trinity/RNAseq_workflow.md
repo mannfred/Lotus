@@ -19,7 +19,7 @@ Ensure your .fastq files are of equal length.
 ~/Lotus filicaulis Project/RNA seq reads$ gunzip -c LFY_R2.fastq.gz | wc -l
 ```
 <br />
-If .fastq files are unequal in length (can happen when downloading published RNA-seq datasets), please see [Eric Normandeau's python script](https://github.com/enormandeau/Scripts/blob/master/fastqCombinePairedEnd.py) to re-sync trimmed .fastq files or [Simon Andrews'](https://github.com/s-andrews) perl script which I've hosted [here.](https://github.com/mannfred/Lotus/blob/master/Trinity/fastq_sanity_check.md) 
+If .fastq files are unequal in length (can happen when downloading published RNA-seq datasets), please see [Eric Normandeau's python script](https://github.com/enormandeau/Scripts/blob/master/fastqCombinePairedEnd.py) to re-sync trimmed .fastq files. If your .fastq files have been corrupted (can happen during a FTP) see [Simon Andrews'](https://github.com/s-andrews) perl script which I've hosted [here](https://github.com/mannfred/Lotus/blob/master/Trinity/fastq_sanity_check.md) to sanity check .fastq files.
 <br />
 ---
 ##### De novo assembly
