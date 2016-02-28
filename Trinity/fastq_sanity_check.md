@@ -1,5 +1,15 @@
 This perl script was written by [Simon Andrews](https://github.com/s-andrews) to sanity check fastq files and filter corrupted regions.
 
+allow script to be executable:
+``` 
+chmod 755 fastqfilter.pl
+```
+run script:
+```
+./fastqfilter.pl All_GN_R1.fastq > filter_All_GN_R1.fastq
+
+```
+copy the following script to a text file and save as .pl
 ```
 #!/usr/bin/perl
 use warnings;
