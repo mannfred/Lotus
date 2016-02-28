@@ -13,7 +13,7 @@ We have two transcriptomes to analyse for differential expression: <br />
 yellow (LFY_R1.fastq and LFY_R2.fastq) and red (LFR_R1.fastq and LFR_R2.fastq) <br />
 <br />
 
-####First things first:
+###First things first:
 Ensure your .fastq files are of equal length.
 ```
 ~/Lotus filicaulis Project/RNA seq reads$ gunzip -c LFY_R2.fastq.gz | wc -l
