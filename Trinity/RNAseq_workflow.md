@@ -1,12 +1,4 @@
-First things first:
-Ensure your .fastq files are of equal length.
-```
-~/Lotus filicaulis Project/RNA seq reads$ gunzip -c LFY_R2.fastq.gz | wc -l
-```
-<br />
-If .fastq files are unequal in length (can happen when downloading published RNA-seq datasets), please see [Eric Normandeau's python script](https://github.com/enormandeau/Scripts/blob/master/fastqCombinePairedEnd.py) to re-sync trimmed .fastq files. Takes ~2.5 hours on a 7.3GB data set, your mileage may vary depending on your machine!
-<br />
----
+
 ### De novo assembly of RNA-seq reads into contigs using Trinity (v 2.0.6)
 
 
@@ -21,6 +13,15 @@ We have two transcriptomes to analyse for differential expression: <br />
 yellow (LFY_R1.fastq and LFY_R2.fastq) and red (LFR_R1.fastq and LFR_R2.fastq) <br />
 <br />
 
+####First things first:
+Ensure your .fastq files are of equal length.
+```
+~/Lotus filicaulis Project/RNA seq reads$ gunzip -c LFY_R2.fastq.gz | wc -l
+```
+<br />
+If .fastq files are unequal in length (can happen when downloading published RNA-seq datasets), please see [Eric Normandeau's python script](https://github.com/enormandeau/Scripts/blob/master/fastqCombinePairedEnd.py) to re-sync trimmed .fastq files. Takes ~2.5 hours on a 7.3GB data set, your mileage may vary depending on your machine!
+<br />
+---
 ##### De novo assembly
 
 Commands were run in the Ubuntu 14.04 shell
