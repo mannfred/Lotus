@@ -1,6 +1,6 @@
 If attempting to run Trinity spaces in the .fastq header may cause trouble. Replace spaces with / in the header:
 ```
-awk '{ if (NR%4==1) { print $1"_"$2"/1" } else { print } }' Read1.fastq > rename_Read1.fastq
+awk '{ if (NR%4==1) { print $1"_"$2"/1" } else { print } }' All_GN_R1.fastq > nospaces_All_GN_R1.fastq
 ```
 
 This perl script was written by [Simon Andrews](https://github.com/s-andrews) to sanity check fastq files and filter corrupted regions.
