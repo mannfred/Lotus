@@ -20,7 +20,7 @@ Ensure your .fastq files are of equal length.
 ```
 and
 ```
-grep -c HWI-ST LFY_R2.fastq.gz
+zgrep -c HWI-ST LFY_R2.fastq.gz
 ```
 <br />
 If .fastq files are unequal in length (can happen when downloading published RNA-seq datasets), please see [Eric Normandeau's python script](https://github.com/enormandeau/Scripts/blob/master/fastqCombinePairedEnd.py) to re-sync trimmed .fastq files. If your .fastq files have been corrupted (can happen during a FTP) see [Simon Andrews'](https://github.com/s-andrews) perl script which I've hosted [here](https://github.com/mannfred/Lotus/blob/master/Trinity/fastq_sanity_check.md) to sanity check .fastq files.
