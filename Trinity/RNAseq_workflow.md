@@ -22,7 +22,11 @@ and
 ```
 zgrep -c HWI-ST LFY_R2.fastq.gz
 ```
-
+<br />
+Also, check to see if your .fastq has any spaces in the headers. If so, best to replace them with an underscore.
+```
+sed 's/[ \t]/_/g' input.fastq > in.fq
+```
 ---
 ##### De novo assembly
 
