@@ -39,7 +39,7 @@ output: Trinity.fasta
 <br />
 Relevant for UBC ZCU Cluster Users:
 ```
-/Linux/trinity/./Trinity --seqType fq --max_memory 42G --left All_GN_R1.fastq --right All_GN_R2.fastq --CPU 16 --output ~/Genlisea-trinity --normalize_reads --normalize_max_read_cov 30 
+/Linux/trinity/./Trinity --seqType fq --SS_lib_type FR --max_memory 340G --left LFY_R1.fastq,LFR_R1.fastq --right LFY_R2.fastq,LFR_R2.fastq --CPU 16 --output ~/your_trinity_folder
 
 ```
 <br />
