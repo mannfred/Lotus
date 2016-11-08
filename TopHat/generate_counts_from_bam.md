@@ -32,3 +32,9 @@ htseq-count --stranded=no --mode=intersection-nonempty -t exon -i gene_id Galaxy
 <br />
 
 *see Trinity instructions to build expression matrix and calculate differential expression and .R file in /TopHat to normalize counts.
+
+##### Convert csv to tab-delimited for EdgeR
+
+```
+ sed -e 's/,/\t/g' TopHat.counts.matrix.csv > TopHat.counts.matrix_tab.txt
+ ```
