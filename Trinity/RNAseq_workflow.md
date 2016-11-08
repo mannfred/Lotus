@@ -52,6 +52,11 @@ cat ~/path/Trinity.fasta | cut -f 1 -d “ “ > Trinity.fasta.adj
 output: Trinity.fasta.adj
 <br />
 <br />
+
+##### Assess the read content of the assembly 
+
+[Detailed here:](https://github.com/trinityrnaseq/trinityrnaseq/wiki/RNA-Seq-Read-Representation-by-Trinity-Assembly)
+
 ##### Calculate expression as counts per contig (RSEM)
 
 ```
