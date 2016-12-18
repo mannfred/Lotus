@@ -42,7 +42,50 @@ AIC: 70.616
 
 Number of Fisher Scoring iterations: 2
 
+####################################################
+##Calculating R-squared values for both treatments##
+####################################################
 
+    #control model
+Call:
+lm(formula = colourCTL ~ daysPACCCTL, data = mydataCTL)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.44996 -0.37453  0.05937  0.55004  0.90852 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -0.05937    0.24508  -0.242    0.811    
+daysPACCCTL  0.35848    0.04780   7.500 6.07e-07 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.5803 on 18 degrees of freedom
+Multiple R-squared:  0.7576,	Adjusted R-squared:  0.7441 
+F-statistic: 56.25 on 1 and 18 DF,  p-value: 6.067e-07
+    
+    #treatment model
+
+Call:
+lm(formula = colourTRT ~ daysPACCTRT, data = mydataTRT)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.0979 -0.1630  0.1210  0.1898  0.9021 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -0.12104    0.21372  -0.566    0.578    
+daysPACCTRT  0.73964    0.08277   8.937 4.89e-08 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.5054 on 18 degrees of freedom
+Multiple R-squared:  0.8161,	Adjusted R-squared:  0.8058 
+F-statistic: 79.86 on 1 and 18 DF,  p-value: 4.893e-08
+    
+    
 ###################################################
 #################Visualization#####################
 ###################################################
