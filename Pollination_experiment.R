@@ -47,7 +47,7 @@ Number of Fisher Scoring iterations: 2
 #################Visualization#####################
 ###################################################
 
-setwd('C:/Users/mannfred/Dropbox/UBC Botany/Lotus/Excel Books/Greenhouse Exp')
+setwd('C:/path/')
 
 mydata<-read.csv('Standards_PACC.csv')
 head(mydata)
