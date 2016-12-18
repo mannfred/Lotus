@@ -71,6 +71,5 @@ plot<- ggplot(data= mydata, aes(x= daysPACC, y= colour, colour= treatment))+
               coord_cartesian(ylim= c(-0.16667, 1))+
               theme_classic()+
               geom_smooth(method='glm',lwd=0.8, fullrange=TRUE)+
-              #geom_abline(intercept= -0.0198, slope= 0.11949, colour= 'blue')
-              #geom_abline(intercept= -0.04036, slope= 0.24654, colour='red')
+          
               
